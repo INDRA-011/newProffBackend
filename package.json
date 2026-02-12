@@ -1,0 +1,14 @@
+{
+  "name": "newproff",
+  "version": "1.0.0",
+  "description": "i am learning backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Indra Tamang",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^9.2.1"
+  }
+}
