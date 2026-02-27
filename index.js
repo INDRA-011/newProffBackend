@@ -1,6 +1,17 @@
 const express = require("express");
+const dotenv = require("dotenv");
+
+dotenv.config();
+const connectToDB = require("./db/db");
 const app = express();
-const PORT = 5000;
+
+app.use(express.json());
+
+connectToDB();
+
+app.use("/auth", require("./routes/userRoute"));
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
@@ -9,4 +20,3 @@ app.listen(PORT, () => {
 app.get("/", (req, res) => {
   res.send("Indra Tamang");
 });
-
