@@ -29,6 +29,7 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
     });
+
     await newUser.save();
 
     const token = jwt.sign(
@@ -46,12 +47,21 @@ const register = async (req, res) => {
       success: true,
       message: "User registered successfully !",
       token,
+
+      password,
+    });
+    await newUser.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "User registered successfully",
       newUser,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: `Something went wrong ${error.message}`,
+      message: "Internal server error",
     });
   }
 };
