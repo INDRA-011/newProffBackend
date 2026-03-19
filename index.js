@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const dns = require("node:dns");
+dns.setServers(["1.1.1.1"]);
 
 const app = express();
 app.use(express.json());
@@ -7,7 +9,8 @@ app.use(express.json());
 app.use("/auth", require("./routes/userRoute"));
 
 const connectToDB = require("./db/db");
-connectToDB();
+const { Dna } = require("lucide-react");
+connectToDB();  
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;

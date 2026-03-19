@@ -67,17 +67,85 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  //Destructuring the data
   const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User doesnot exits",
+      });
+    }
+
+    const checkPassword = await bcrypt.compare(password, user.password);
+    if (!checkPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Password",
+      });
+    }
+    const token = jwt.sign(
+      {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" },
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Login Successfully",
+      token,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Error while login is ${error.message}`,
+    });
+  }
 };
 
-module.exports = {
-  register,
-  login,
-};
+const getProfile = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User Does not exist",
+      });
+    }
 
+    return res.status(200).json({
+      success: true,
+      message: "Profile fetch successfully",
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Error while getting profile is ${error}`,
+    });
+  }
+};
 //200 success
 //201 new resource created
 //400 validation error
 //401 unauthorized
 //500 server error
+
+module.exports = {
+  register,
+  login,
+  getProfile,
+};
